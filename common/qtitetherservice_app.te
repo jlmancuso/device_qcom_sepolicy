@@ -25,44 +25,21 @@
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
 # IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#qfp daemon for ultrasonic fingerprint sensor
-type qfp-daemon, domain;
-type qfp-daemon_exec, exec_type, file_type;
+type qtitetherservice_app, domain;
+app_domain(qtitetherservice_app)
 
-net_domain(qfp-daemon)
-init_daemon_domain(qfp-daemon)
+allow qtitetherservice_app qtitetherservices_service:service_manager add;
+allow qtitetherservice_app { app_api_service system_api_service }:service_manager find;
 
-binder_call(qfp-daemon, servicemanager)
-binder_call(qfp-daemon, system_app)
-binder_call(qfp-daemon, fingerprintd)
-binder_use(qfp-daemon)
+allow qtitetherservice_app self:socket create_socket_perms;
 
-allow qfp-daemon qfp-daemon_data_file:dir { rw_dir_perms setattr };
-allow qfp-daemon qfp-daemon_data_file:file create_file_perms;
+allow qtitetherservice_app ipa_dev:chr_file rw_file_perms;
 
-# Access to tee_device
-allow qfp-daemon tee_device:chr_file rw_file_perms;
+unix_socket_connect(qtitetherservice_app, netd, netd);
 
-# Add IQfpService service
-allow qfp-daemon iqfp_service:service_manager add;
+qmux_socket(qtitetherservice_app);
 
-# Read system property
-allow qfp-daemon property_socket:sock_file write;
+allow qtitetherservice_app qtitetherservice_app_data_file:dir create_dir_perms;
+allow qtitetherservice_app qtitetherservice_app_data_file:{ file lnk_file } create_file_perms;
 
-# RW to device driver
-allow qfp-daemon qbt1000_device:chr_file rw_file_perms;
-
-# R dir perms for firmware dir
-r_dir_file(qfp-daemon, firmware_file)
-
-# Allow qfp daemon access to system server
-binder_call(qfp-daemon, system_server);
-
-# Allow read to sensor device and read/write to sensor socket
-allow qfp-daemon sensors_device:chr_file r_file_perms;
-allow qfp-daemon sensors_socket:sock_file rw_file_perms;
-allow qfp-daemon sensors:unix_stream_socket connectto;
-
-# Allow listing input devices and sending input events
-allow qfp-daemon input_device:chr_file rw_file_perms;
-allow qfp-daemon input_device:dir r_dir_perms;
+allow qtitetherservice_app wcnss_service_exec:file rx_file_perms;
