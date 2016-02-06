@@ -23,28 +23,7 @@
 # BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
 # WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
 # OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN
-# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+# IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 
-type qtitetherservice_app, domain;
-app_domain(qtitetherservice_app)
-
-allow qtitetherservice_app qtitetherservices_service:service_manager add;
-allow qtitetherservice_app { app_api_service system_api_service }:service_manager find;
-
-allow qtitetherservice_app self:socket create_socket_perms;
-
-allow qtitetherservice_app ipa_dev:chr_file rw_file_perms;
-
-unix_socket_connect(qtitetherservice_app, netd, netd);
-
-qmux_socket(qtitetherservice_app);
-
-allow qtitetherservice_app qtitetherservice_app_data_file:dir create_dir_perms;
-allow qtitetherservice_app qtitetherservice_app_data_file:{ file lnk_file } create_file_perms;
-
-allow qtitetherservice_app wcnss_service_exec:file rx_file_perms;
-
-# TEMPORARY: Type transitioning via seapp_contexts from system_app isn't working
-#
-allow system_app qtitetherservice_app_data_file:dir create_dir_perms;
-allow system_app qtitetherservice_app_data_file:{ file lnk_file } create_file_perms;
+#property for thermal daemon
+type ctl_thermal-engine_prop, property_type;
